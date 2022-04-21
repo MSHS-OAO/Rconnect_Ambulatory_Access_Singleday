@@ -100,9 +100,9 @@ saveRDS(utilization.data, "/data/Ambulatory/Data/New_Query/utilization_data.rds"
 rm(utilization.data)
 rm(utilization.data.prev)
 
-# holid.prev <- read_feather("/data/Ambulatory/Data/New_Query/holid.feather")
-# holid <- bind_rows(holid, holid.prev)
-# holid <- holid %>% distinct()
+holid.prev <- read_feather("/data/Ambulatory/Data/New_Query/holid.feather")
+holid <- bind_rows(holid, holid.prev)
+holid <- holid %>% distinct()
 write_feather(holid, "/data/Ambulatory/Data/New_Query/holid.feather")
 
 
