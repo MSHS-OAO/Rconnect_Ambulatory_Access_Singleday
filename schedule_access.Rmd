@@ -78,8 +78,8 @@ suppressMessages({
   library(odbc)
 })
 source("access_process.R")
-path <- "/nfs/data/Applications/Ambulatory/Data/"
-
+#path <- "/nfs/data/Applications/Ambulatory/Data/"
+path <- "/data/Ambulatory/Data/New_Query/"
 historical.data.prev <- readRDS(paste0(path, "historical_data.rds"))
 historical.data <- bind_rows(historical.data.prev,historical.data)
 historical.data <- historical.data %>% distinct()
