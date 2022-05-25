@@ -6784,13 +6784,19 @@
   },
   "files": {
     "access_process.R": {
-      "checksum": "a0710c12ab840704c293fb9745cdde64"
+      "checksum": "073eb0651e5a86e456c03110c431fdd0"
+    },
+    "Data/Oncology System Data - Zip Code Groupings 4.13.2021.csv": {
+      "checksum": "f8702ce8b9f0514a3ecdc90b4f461c0d"
+    },
+    "Data/zipcode.feather": {
+      "checksum": "2abd2718376d0ac1f733e2e394c73849"
     },
     "README.md": {
       "checksum": "2ac411dfce566704c52f7e155a3aaa25"
     },
     "schedule_access.Rmd": {
-      "checksum": "4abe51ed558d78ccb88c70d003e5a000"
+      "checksum": "f72d0ac1153625e4daa39c9ea1e5b8bb"
     }
   },
   "users": null
