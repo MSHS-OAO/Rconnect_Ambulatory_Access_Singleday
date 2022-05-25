@@ -79,7 +79,10 @@ suppressMessages({
 })
 source("access_process.R")
 path <- "/nfs/data/Applications/Ambulatory/Data/"
+<<<<<<< HEAD
 #path <- "/data/Ambulatory/Data/New_Query/"
+=======
+>>>>>>> cfd06d933d43db4d16a5b2ba79869f5ac9d8595c
 
 historical.data.prev <- readRDS(paste0(path, "historical_data.rds"))
 historical.data <- bind_rows(historical.data.prev,historical.data)
@@ -110,7 +113,5 @@ holid.prev <- read_feather(paste0(path, "holid.feather"))
 holid <- bind_rows(holid, holid.prev)
 holid <- holid %>% distinct()
 write_feather(holid, paste0(path,"holid.feather"))
-
-
 ```
 
