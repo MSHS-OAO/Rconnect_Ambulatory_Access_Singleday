@@ -98,7 +98,7 @@ rm(population.data_filtered.prev)
 utilization.data.prev <- readRDS(paste0(path,"utilization_data.rds"))
 utilization.data <- bind_rows(utilization.data,utilization.data.prev)
 min_date_util <- Sys.Date() - 61
-max_data <- Sys.Date() - 1
+max_date_util <- Sys.Date() - 1
 utilization.data <- utilization.data %>% filter(Appt.DateYear >= min_date_util)
 utilization.data <- utilization.data %>% filter(Appt.DateYear <= max_date_util)
 utilization.data <- utilization.data %>% distinct()
