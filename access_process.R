@@ -93,7 +93,7 @@ process_data <- function(access_data){
                      "VISIT_END_DTTM","CHECKOUT_DTTM",
                      "TIME_IN_ROOM_MINUTES","CYCLE_TIME_MINUTES","VIS_NEW_TO_DEP_YN","LOS_NAME", "DEP_RPT_GRP_THIRTYONE", 
                      "APPT_ENTRY_USER_NAME_WID", "ACCESS_CENTER_SCHEDULED_YN", "VISIT_METHOD", "VISIT_PROV_STAFF_RESOURCE_C",
-                     "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI")
+                     "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ESC_CSN_ID", "VISITPLAN")
   
   # Subset raw data 
   data.subset <- data.raw[original.cols]
@@ -109,7 +109,7 @@ process_data <- function(access_data){
                 "Visitend.DTTM","Checkout.DTTM",
                 "Time.in.room","Cycle.time","New.PT","Class.PT","Cadence",
                 "Appt.Source","Access.Center","Visit.Method","Resource",
-                "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI")
+                "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ESC_CSN_ID", "VISITPLAN")
   
   colnames(data.subset) <- new.cols
   
@@ -248,7 +248,7 @@ access_sql <- paste0("SELECT DEP_RPT_GRP_SEVENTEEN,DEPT_SPECIALTY_NAME,DEPARTMEN
                      TIME_IN_ROOM_MINUTES,CYCLE_TIME_MINUTES,VIS_NEW_TO_DEP_YN,LOS_NAME,LOS_CODE,
                      DEP_RPT_GRP_THIRTYONE,APPT_ENTRY_USER_NAME_WID, 
                      ACCESS_CENTER_SCHEDULED_YN, VISIT_METHOD, VISIT_PROV_STAFF_RESOURCE_C,
-                     PRIMARY_DX_CODE,ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME, NPI, VISIT_GROUP_NUM
+                     PRIMARY_DX_CODE,ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME, NPI, PAT_ESC_CSN_ID, VISITPLAN
 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
 WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
 				AND TO_DATE('", access_date_2, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')
