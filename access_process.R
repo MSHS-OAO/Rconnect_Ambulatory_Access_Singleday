@@ -186,7 +186,7 @@ process_data <- function(access_data){
   # data.subset.new$Lead.Days <- as.numeric((difftime(as.Date(data.subset.new$data.subset.new$Appt.DTTM, format="%Y-%m-%d"), as.Date(data.subset.new$data.subset.new$Appt.Cancel.DTTM, format="%Y-%m-%d"),  units = "days"))) ## Lead days for appt cancellation 
   data.subset.new$Lead.Days <- as.Date(data.subset.new$Appt.DTTM, format="%Y-%m-%d")-as.Date(data.subset.new$Appt.Cancel.DTTM, format="%Y-%m-%d") ## Lead days for appt cancellation
   data.subset.new$Wait.Time <- as.Date(data.subset.new$Appt.DTTM, format="%Y-%m-%d")-as.Date(data.subset.new$Appt.Made.DTTM, format="%Y-%m-%d")
-  data.subset.new$uniqueId <- paste(data.subset.new$Department,data.subset.new$Provider,data.subset.new$MRN,data.subset.new$Appt.DTTM) ## Unique ID 
+  data.subset.new$uniqueId <- paste(data.subset.new$PAT_ESC_CSN_ID,data.subset.new$Patient.Name,data.subset.new$Appt.DTTM, data.subset.new$Department) ## Unique ID 
   
   
   #Update cycltime to as.numeric(round(difftime(min(data.subset.new$Visitend.DTTM,Checkout.DTTM),data.subset.new$Checkin.DTTM,units="mins"),1))
