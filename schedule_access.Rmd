@@ -1,6 +1,11 @@
 ---
 title: "Sserver Processing"
 output: html_document
+resource_files:
+- access_process.R
+- access_process.R
+- access_process.R
+- access_process.R
 ---
 
 
@@ -78,7 +83,7 @@ suppressMessages({
   library(odbc)
 })
 source("access_process.R")
-path <- "/nfs/data/Applications/Ambulatory/Data/"
+path <- "/nfs/data/Applications/Ambulatory/Data_Updated/"
 
 
 historical.data.prev <- readRDS(paste0(path, "historical_data.rds"))
@@ -88,27 +93,27 @@ saveRDS(historical.data, paste0(path,"historical_data.rds"))
 rm(historical.data.prev)
 rm(historical.data)
 
-population.data_filtered.prev <- readRDS(paste0(path, "population_data.rds"))
-population.data_filtered <- bind_rows(population.data_filtered,population.data_filtered.prev)
-population.data_filtered <- population.data_filtered %>% distinct()
-saveRDS(population.data_filtered, paste0(path,"population_data.rds"))
-rm(population.data_filtered)
-rm(population.data_filtered.prev)
-
-utilization.data.prev <- readRDS(paste0(path,"utilization_data.rds"))
-utilization.data <- bind_rows(utilization.data,utilization.data.prev)
-min_date_util <- Sys.Date() - 61
-max_date_util <- Sys.Date() - 1
-utilization.data <- utilization.data %>% filter(Appt.DateYear >= min_date_util)
-utilization.data <- utilization.data %>% filter(Appt.DateYear <= max_date_util)
-utilization.data <- utilization.data %>% distinct()
-saveRDS(utilization.data, paste0(path, "utilization_data.rds"))
-rm(utilization.data)
-rm(utilization.data.prev)
-
-holid.prev <- read_feather(paste0(path, "holid.feather"))
-holid <- bind_rows(holid, holid.prev)
-holid <- holid %>% distinct()
-write_feather(holid, paste0(path,"holid.feather"))
+# population.data_filtered.prev <- readRDS(paste0(path, "population_data.rds"))
+# population.data_filtered <- bind_rows(population.data_filtered,population.data_filtered.prev)
+# population.data_filtered <- population.data_filtered %>% distinct()
+# saveRDS(population.data_filtered, paste0(path,"population_data.rds"))
+# rm(population.data_filtered)
+# rm(population.data_filtered.prev)
+# 
+# utilization.data.prev <- readRDS(paste0(path,"utilization_data.rds"))
+# utilization.data <- bind_rows(utilization.data,utilization.data.prev)
+# min_date_util <- Sys.Date() - 61
+# max_date_util <- Sys.Date() - 1
+# utilization.data <- utilization.data %>% filter(Appt.DateYear >= min_date_util)
+# utilization.data <- utilization.data %>% filter(Appt.DateYear <= max_date_util)
+# utilization.data <- utilization.data %>% distinct()
+# saveRDS(utilization.data, paste0(path, "utilization_data.rds"))
+# rm(utilization.data)
+# rm(utilization.data.prev)
+# 
+# holid.prev <- read_feather(paste0(path, "holid.feather"))
+# holid <- bind_rows(holid, holid.prev)
+# holid <- holid %>% distinct()
+# write_feather(holid, paste0(path,"holid.feather"))
 ```
 
