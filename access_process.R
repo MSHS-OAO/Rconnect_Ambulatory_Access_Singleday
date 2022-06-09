@@ -258,7 +258,9 @@ WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD H
 
 
 
-updated_encounters_query <- glue("")
+updated_encounters_query <- glue("SELECT DEPARTMENT_NAME, PAT_NAME, PAT_ENC_CSN_ID, APPT_DTTM, ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME
+                                 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
+                                 WHERE Y_ENC_CLOSE_TIME")
 access_raw <- dbGetQuery(con, access_sql)
 #access_raw <- read.csv("access_04_12_2022.csv")
 
