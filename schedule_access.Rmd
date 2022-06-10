@@ -94,8 +94,7 @@ historical.data <- historical.data %>% distinct()
 # historical.data$Y_ENC_CLOSE_TIME[indx != 0] <- updated_encounters_result$Y_ENC_CLOSE_TIME[indx]
 
 saveRDS(historical.data, paste0(path,"historical_data.rds"))
-rm(historical.data.prev)
-rm(historical.data)
+
 
 # population.data_filtered.prev <- readRDS(paste0(path, "population_data.rds"))
 # population.data_filtered <- bind_rows(population.data_filtered,population.data_filtered.prev)
