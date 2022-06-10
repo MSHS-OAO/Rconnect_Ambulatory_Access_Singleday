@@ -68,6 +68,7 @@ suppressMessages({
   library(pryr)
   library(DBI)
   library(odbc)
+  library(glue)
 })
 
 memory.limit(size = 8000000)
@@ -83,7 +84,7 @@ process_data <- function(access_data){
   data.raw$Provider_Leave_DTTM <- ""
   
   # Data fields incldued for analysis 
-  original.cols <- c("DEP_RPT_GRP_SEVENTEEN","DEPT_SPECIALTY_NAME","DEPARTMENT_NAME","PROV_NAME_WID",
+  original.cols <- c("DEP_RPT_GRP_SEVENTEEN","DEPT_SPECIALTY_NAME","DEPARTMENT_NAME","PROV_NAME_WID", "DEPARTMENT_ID",
                      "MRN","PAT_NAME","ZIP_CODE","SEX","BIRTH_DATE","FINCLASS",
                      "APPT_MADE_DTTM","APPT_DTTM","PRC_NAME","APPT_LENGTH","DERIVED_STATUS_DESC",
                      "APPT_CANC_DTTM", "CANCEL_REASON_NAME",
@@ -99,7 +100,7 @@ process_data <- function(access_data){
   data.subset <- data.raw[original.cols]
   
   # Rename data fields (columns) 
-  new.cols <- c("Campus","Campus.Specialty","Department","Provider",
+  new.cols <- c("Campus","Campus.Specialty","Department","Provider", "DepartmentId"
                 "MRN","Patient.Name","Zip.Code","Sex","Birth.Date","Coverage",
                 "Appt.Made.DTTM","Appt.DTTM","Appt.Type","Appt.Dur","Appt.Status",
                 "Appt.Cancel.DTTM", "Cancel.Reason",
@@ -186,7 +187,7 @@ process_data <- function(access_data){
   # data.subset.new$Lead.Days <- as.numeric((difftime(as.Date(data.subset.new$data.subset.new$Appt.DTTM, format="%Y-%m-%d"), as.Date(data.subset.new$data.subset.new$Appt.Cancel.DTTM, format="%Y-%m-%d"),  units = "days"))) ## Lead days for appt cancellation 
   data.subset.new$Lead.Days <- as.Date(data.subset.new$Appt.DTTM, format="%Y-%m-%d")-as.Date(data.subset.new$Appt.Cancel.DTTM, format="%Y-%m-%d") ## Lead days for appt cancellation
   data.subset.new$Wait.Time <- as.Date(data.subset.new$Appt.DTTM, format="%Y-%m-%d")-as.Date(data.subset.new$Appt.Made.DTTM, format="%Y-%m-%d")
-  data.subset.new$uniqueId <- paste(data.subset.new$PAT_ESC_CSN_ID,data.subset.new$Patient.Name,data.subset.new$Appt.DTTM, data.subset.new$Department) ## Unique ID 
+  data.subset.new$uniqueId <- paste(data.subset.new$PAT_ENC_CSN_ID,data.subset.new$Patient.Name,data.subset.new$Appt.DTTM, data.subset.new$Department) ## Unique ID 
   
   
   #Update cycltime to as.numeric(round(difftime(min(data.subset.new$Visitend.DTTM,Checkout.DTTM),data.subset.new$Checkin.DTTM,units="mins"),1))
@@ -258,9 +259,7 @@ WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD H
 
 
 
-updated_encounters_query <- glue("SELECT DEPARTMENT_NAME, PAT_NAME, PAT_ENC_CSN_ID, APPT_DTTM, ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME
-                                 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
-                                 WHERE Y_ENC_CLOSE_TIME")
+
 access_raw <- dbGetQuery(con, access_sql)
 #access_raw <- read.csv("access_04_12_2022.csv")
 
@@ -268,6 +267,30 @@ process_data_run <- process_data(access_raw)
 data.subset.new <- process_data_run[[1]]
 holid <- process_data_run[[2]]
 
+##Updated Encounters
+updated_encounters <- glue("SELECT DEPARTMENT_NAME, PAT_NAME, PAT_ENC_CSN_ID, APPT_DTTM, ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME
+                                 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
+                                WHERE Y_ENC_CLOSE_TIME BETWEEN TO_DATE('{access_date_1} 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND TO_DATE('{access_date_2} 23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
+updated_encounters_result <- dbGetQuery(con,updated_encounters)
+
+dttm <- function(x) {
+  as.POSIXct(x,format="%Y-%m-%d %H:%M:%S",tz=Sys.timezone(),origin = "1970-01-01")
+}
+
+# Clean up department names (X_..._DEACTIVATED)
+updated_encounters_result$DEPARTMENT_NAME <- as.character(updated_encounters_result$DEPARTMENT_NAME)
+updated_encounters_result <- updated_encounters_result %>%
+  mutate(DEPARTMENT_NAME = ifelse(str_detect(DEPARTMENT_NAME, "DEACTIVATED"),
+                             gsub('^.{2}|.{12}$', '', DEPARTMENT_NAME), 
+                             ifelse(startsWith(DEPARTMENT_NAME,"X_"),
+                                    gsub('^.{2}', '', DEPARTMENT_NAME), DEPARTMENT_NAME)),
+         APPT_DTTM = dttm(APPT_DTTM),
+         uniqueId = paste(PAT_ENC_CSN_ID,PAT_NAME,APPT_DTTM, DEPARTMENT_NAME)
+         ) %>%
+  rename(Department = DEPARTMENT_NAME,
+         Patient.Name = PAT_NAME,
+         Appt.DTTM = APPT_DTTM)
 
 
 #Create Historical
