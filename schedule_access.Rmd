@@ -81,17 +81,17 @@ source("access_process.R")
 path <- "/nfs/data/Applications/Ambulatory/Data_Updated/"
 
 
-historical.data.prev <- readRDS(paste0(path, "historical_data.rds"))
-historical.data <- bind_rows(historical.data.prev,historical.data)
+# historical.data.prev <- readRDS(paste0(path, "historical_data.rds"))
+# historical.data <- bind_rows(historical.data.prev,historical.data)
 historical.data <- historical.data %>% distinct()
-indx <- match(historical.data$uniqueId, updated_encounters_result$uniqueId, nomatch = 0)
-historical.data$ENC_CLOSED_CHARGE_STATUS[indx != 0] <- updated_encounters_result$ENC_CLOSED_CHARGE_STATUS[indx]
-
-indx <- match(historical.data$uniqueId, updated_encounters_result$uniqueId, nomatch = 0)
-historical.data$Y_ENC_COSIGN_TIME[indx != 0] <- updated_encounters_result$Y_ENC_COSIGN_TIME[indx]
-
-indx <- match(historical.data$uniqueId, updated_encounters_result$uniqueId, nomatch = 0)
-historical.data$Y_ENC_CLOSE_TIME[indx != 0] <- updated_encounters_result$Y_ENC_CLOSE_TIME[indx]
+# indx <- match(historical.data$uniqueId, updated_encounters_result$uniqueId, nomatch = 0)
+# historical.data$ENC_CLOSED_CHARGE_STATUS[indx != 0] <- updated_encounters_result$ENC_CLOSED_CHARGE_STATUS[indx]
+# 
+# indx <- match(historical.data$uniqueId, updated_encounters_result$uniqueId, nomatch = 0)
+# historical.data$Y_ENC_COSIGN_TIME[indx != 0] <- updated_encounters_result$Y_ENC_COSIGN_TIME[indx]
+# 
+# indx <- match(historical.data$uniqueId, updated_encounters_result$uniqueId, nomatch = 0)
+# historical.data$Y_ENC_CLOSE_TIME[indx != 0] <- updated_encounters_result$Y_ENC_CLOSE_TIME[indx]
 
 saveRDS(historical.data, paste0(path,"historical_data.rds"))
 rm(historical.data.prev)
