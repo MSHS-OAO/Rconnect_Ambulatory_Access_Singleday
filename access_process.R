@@ -100,7 +100,7 @@ process_data <- function(access_data){
   data.subset <- data.raw[original.cols]
   
   # Rename data fields (columns) 
-  new.cols <- c("Campus","Campus.Specialty","Department","Provider", "DepartmentId"
+  new.cols <- c("Campus","Campus.Specialty","Department","Provider", "DepartmentId",
                 "MRN","Patient.Name","Zip.Code","Sex","Birth.Date","Coverage",
                 "Appt.Made.DTTM","Appt.DTTM","Appt.Type","Appt.Dur","Appt.Status",
                 "Appt.Cancel.DTTM", "Cancel.Reason",
