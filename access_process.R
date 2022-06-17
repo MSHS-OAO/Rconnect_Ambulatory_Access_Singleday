@@ -233,10 +233,10 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 )
 
 
-access_date_1 <- Sys.Date()-1
+#access_date_1 <- Sys.Date()-1
 access_date_2 <- Sys.Date()-1
 
-#access_date_1 <- "2021-01-01"
+access_date_1 <- "2021-01-01"
 #access_date_2 <- "2022-06-11"
 
 access_sql <- paste0("SELECT DEP_RPT_GRP_SEVENTEEN,DEPT_SPECIALTY_NAME,DEPARTMENT_NAME,PROV_NAME_WID,DEPARTMENT_ID,REFERRING_PROV_NAME_WID,
