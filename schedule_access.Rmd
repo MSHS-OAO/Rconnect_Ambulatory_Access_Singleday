@@ -84,7 +84,7 @@ path <- "/nfs/data/Applications/Ambulatory/Previous_2021/"
 
 
 historical.data <- historical.data %>% distinct() %>% select(-Sex)
-saveRDS(historical.data, paste0(path,"historical_data_2020.rds"))
+saveRDS(historical.data, paste0(path,"historical_data_2019.rds"))
 rm(historical.data)
 
 
