@@ -91,7 +91,7 @@ rm(historical.data)
 #population.data_filtered.prev <- readRDS(paste0(path, "population_data.rds"))
 #population.data_filtered <- bind_rows(population.data_filtered,population.data_filtered.prev)
 #population.data_filtered <- population.data_filtered %>% distinct()
-saveRDS(population.data_filtered, paste0(path,"population_data.rds"))
+#saveRDS(population.data_filtered, paste0(path,"population_data.rds"))
 #rm(population.data_filtered)
 #rm(population.data_filtered.prev)
 
