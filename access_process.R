@@ -421,30 +421,30 @@ utilization.data <- utilization.data %>%
 
 ### Population Data
 
-zipcode_ref <- read_csv(here::here("Data/Oncology System Data - Zip Code Groupings 4.13.2021.csv"))
-zipcode_ref <- zipcode_ref[1:(length(zipcode_ref)-7)]
-zipcode_ref$`Zip Code Layer: A`[which(zipcode_ref$`Zip Code Layer: A` == "Long island")] <- "Long Island"
+#zipcode_ref <- read_csv(here::here("Data/Oncology System Data - Zip Code Groupings 4.13.2021.csv"))
+#zipcode_ref <- zipcode_ref[1:(length(zipcode_ref)-7)]
+#zipcode_ref$`Zip Code Layer: A`[which(zipcode_ref$`Zip Code Layer: A` == "Long island")] <- "Long Island"
 
-zipcode <- as.data.frame(read_feather("Data/zipcode.feather"))
+#zipcode <- as.data.frame(read_feather("Data/zipcode.feather"))
 
 
-population.data <- arrived.data
-population.data$new_zip <- normalize_zip(population.data$Zip.Code)
-population.data <- merge(population.data, zipcode_ref, by.x="new_zip", by.y="Zip Code", all.x = TRUE)
+#population.data <- arrived.data
+#population.data$new_zip <- normalize_zip(population.data$Zip.Code)
+#population.data <- merge(population.data, zipcode_ref, by.x="new_zip", by.y="Zip Code", all.x = TRUE)
 
-population.data <- merge(population.data, zipcode, by.x="new_zip", by.y="zip", all.x = TRUE)
+#population.data <- merge(population.data, zipcode, by.x="new_zip", by.y="zip", all.x = TRUE)
 
-population.data$`Zip Code Layer: A`[(is.na(population.data$`Zip Code Layer: A`) &
+#population.data$`Zip Code Layer: A`[(is.na(population.data$`Zip Code Layer: A`) &
                                        (!is.na(population.data$state) | population.data$state != "NY"))] <- "Out of NYS"
-population.data <- population.data %>%
-  mutate(`Zip Code Layer: B` = ifelse(`Zip Code Layer: A` == "Out of NYS" & is.na(`Zip Code Layer: B`),
-                                      ifelse(state == "NJ", "New Jersey",
-                                             ifelse(state == "CT", "Connecticut",
-                                                    ifelse(state == "FL", "Florida",
-                                                           ifelse(state == "PA", "Pennsylvania", "Other")))), `Zip Code Layer: B`))
+#population.data <- population.data %>%
+#  mutate(`Zip Code Layer: B` = ifelse(`Zip Code Layer: A` == "Out of NYS" & is.na(`Zip Code Layer: B`),
+#                                      ifelse(state == "NJ", "New Jersey",
+#                                             ifelse(state == "CT", "Connecticut",
+#                                                    ifelse(state == "FL", "Florida",
+#                                                           ifelse(state == "PA", "Pennsylvania", "Other")))), `Zip Code Layer: B`))
 
 
-population.data_filtered <- population.data %>% filter(!is.na(`Zip Code Layer: A`))
+#population.data_filtered <- population.data %>% filter(!is.na(`Zip Code Layer: A`))
 
 
 
