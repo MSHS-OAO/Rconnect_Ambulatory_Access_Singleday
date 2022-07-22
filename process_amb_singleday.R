@@ -235,8 +235,8 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 #                       UID    = "villea04",
 #                       PWD    = "villea04123$")
 
-access_date_1 <- "2021-01-01"
-access_date_2 <- "2022-07-21"
+access_date_1 <- Sys.Date() - 1 
+access_date_2 <- Sys.Date() - 1 
 
 
 
@@ -257,15 +257,12 @@ WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD H
 
 
 
-#access_raw <- dbGetQuery(con, access_sql)
+access_raw <- dbGetQuery(con, access_sql)
 
 
-#process_data_run <- process_data(access_raw)
-#data.subset.new <- process_data_run[[1]]
-#holid <- process_data_run[[2]]
-
-data.subset.new <- readRDS("/data/Ambulatory/Data/historical_data.rds")
-
+process_data_run <- process_data(access_raw)
+data.subset.new <- process_data_run[[1]]
+holid <- process_data_run[[2]]
 
 #Create Historical
 max_date <- data.subset.new %>% filter(Appt.Status %in% c("Arrived"))
@@ -277,7 +274,6 @@ rm(data.subset.new)
 #Utilization Data
 max_date_all <- max(historical.data$Appt.DateYear) - 365
 all.data <- historical.data #%>% filter(Appt.DTTM >= max_date_all) ## All data: Arrived, No Show, Canceled, Bumped, Rescheduled
-rm(historical.data)
 arrived.data <- all.data %>% filter(Appt.Status %in% c("Arrived")) ## Arrived data: Arrived
 canceled.bumped.rescheduled.data <- all.data %>% filter(Appt.Status %in% c("Canceled","Bumped","Rescheduled")) ## Canceled data: canceled appointments only
 sameDay <- canceled.bumped.rescheduled.data %>% filter(Lead.Days == 0) # Same day canceled, rescheduled, bumped appts
@@ -424,30 +420,30 @@ utilization.data <- utilization.data %>%
 
 ### Population Data
 
-# zipcode_ref <- read_csv(here::here("Data/Oncology System Data - Zip Code Groupings 4.13.2021.csv"))
-# zipcode_ref <- zipcode_ref[1:(length(zipcode_ref)-7)]
-# zipcode_ref$`Zip Code Layer: A`[which(zipcode_ref$`Zip Code Layer: A` == "Long island")] <- "Long Island"
-# 
-# zipcode <- as.data.frame(read_feather("Data/zipcode.feather"))
-# 
-# 
-# population.data <- arrived.data
-# population.data$new_zip <- normalize_zip(population.data$Zip.Code)
-# population.data <- merge(population.data, zipcode_ref, by.x="new_zip", by.y="Zip Code", all.x = TRUE)
-# 
-# population.data <- merge(population.data, zipcode, by.x="new_zip", by.y="zip", all.x = TRUE)
-# 
-# population.data$`Zip Code Layer: A`[(is.na(population.data$`Zip Code Layer: A`) &
-#                                        (!is.na(population.data$state) | population.data$state != "NY"))] <- "Out of NYS"
-# population.data <- population.data %>%
-#   mutate(`Zip Code Layer: B` = ifelse(`Zip Code Layer: A` == "Out of NYS" & is.na(`Zip Code Layer: B`),
-#                                       ifelse(state == "NJ", "New Jersey",
-#                                              ifelse(state == "CT", "Connecticut",
-#                                                     ifelse(state == "FL", "Florida",
-#                                                            ifelse(state == "PA", "Pennsylvania", "Other")))), `Zip Code Layer: B`))
-# 
-# 
-# population.data_filtered <- population.data %>% filter(!is.na(`Zip Code Layer: A`))
+zipcode_ref <- read_csv(here::here("Data/Oncology System Data - Zip Code Groupings 4.13.2021.csv"))
+zipcode_ref <- zipcode_ref[1:(length(zipcode_ref)-7)]
+zipcode_ref$`Zip Code Layer: A`[which(zipcode_ref$`Zip Code Layer: A` == "Long island")] <- "Long Island"
+
+zipcode <- as.data.frame(read_feather("Data/zipcode.feather"))
+
+
+population.data <- arrived.data
+population.data$new_zip <- normalize_zip(population.data$Zip.Code)
+population.data <- merge(population.data, zipcode_ref, by.x="new_zip", by.y="Zip Code", all.x = TRUE)
+
+population.data <- merge(population.data, zipcode, by.x="new_zip", by.y="zip", all.x = TRUE)
+
+population.data$`Zip Code Layer: A`[(is.na(population.data$`Zip Code Layer: A`) &
+                                       (!is.na(population.data$state) | population.data$state != "NY"))] <- "Out of NYS"
+population.data <- population.data %>%
+  mutate(`Zip Code Layer: B` = ifelse(`Zip Code Layer: A` == "Out of NYS" & is.na(`Zip Code Layer: B`),
+                                      ifelse(state == "NJ", "New Jersey",
+                                             ifelse(state == "CT", "Connecticut",
+                                                    ifelse(state == "FL", "Florida",
+                                                           ifelse(state == "PA", "Pennsylvania", "Other")))), `Zip Code Layer: B`))
+
+
+population.data_filtered <- population.data %>% filter(!is.na(`Zip Code Layer: A`))
 
 
 
