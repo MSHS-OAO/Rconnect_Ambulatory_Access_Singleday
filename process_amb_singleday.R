@@ -264,7 +264,7 @@ WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD H
 #data.subset.new <- process_data_run[[1]]
 #holid <- process_data_run[[2]]
 
-historical.data <- readRDS("/data/Ambulatory/Data/historical_data.rds")
+data.subset.new <- readRDS("/data/Ambulatory/Data/historical_data.rds")
 
 #Create Historical
 max_date <- data.subset.new %>% filter(Appt.Status %in% c("Arrived"))
