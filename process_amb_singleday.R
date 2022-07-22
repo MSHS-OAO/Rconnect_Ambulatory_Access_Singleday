@@ -303,6 +303,8 @@ noShow.data <- all.data %>% filter(Appt.Status %in% c("No Show")) ## Arrived + N
 noShow.data <- rbind(noShow.data,sameDay) # No Shows + Same day canceled, bumped, rescheduled
 arrivedNoShow.data <- rbind(arrived.data,noShow.data) ## Arrived + No Show data: Arrived and No Show
 
+saveRDS(historical.data, "/data/Ambulatory/Data/historical_data.rds")
+rm(historical.data)
 
 # Filter utilization data in last 60 days
 max_date_util <- max(arrivedNoShow.data$Appt.DateYear) - 60
