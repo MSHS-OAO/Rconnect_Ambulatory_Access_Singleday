@@ -124,11 +124,11 @@ process_data <- function(access_data){
                  "Visitend.DTTM","Checkout.DTTM")
   
   # Clean up department names (X_..._DEACTIVATED)
-  data.subset <- data.subset %>%
-    mutate(Department = ifelse(str_detect(Department, "DEACTIVATED"),
-                               gsub('^.{2}|.{12}$', '', Department), 
-                               ifelse(startsWith(Department,"X_"),
-                                      gsub('^.{2}', '', Department), Department)))
+  # data.subset <- data.subset %>%
+  #   mutate(Department = ifelse(str_detect(Department, "DEACTIVATED"),
+  #                              gsub('^.{2}|.{12}$', '', Department), 
+  #                              ifelse(startsWith(Department,"X_"),
+  #                                     gsub('^.{2}', '', Department), Department)))
   
   dttm <- function(x) {
     as.POSIXct(x,format="%Y-%m-%d %H:%M:%S",tz=Sys.timezone(),origin = "1970-01-01")
@@ -235,8 +235,8 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 #                       UID    = "villea04",
 #                       PWD    = "villea04123$")
 
-access_date_1 <- Sys.Date() - 1
-access_date_2 <- "2022-06-07"
+access_date_1 <- "2021-01-01"
+access_date_2 <- "2022-07-21"
 
 
 
@@ -252,8 +252,8 @@ access_sql <- paste0("SELECT DEP_RPT_GRP_SEVENTEEN,DEPT_SPECIALTY_NAME,DEPARTMEN
                      ACCESS_CENTER_SCHEDULED_YN, VISIT_METHOD, VISIT_PROV_STAFF_RESOURCE_C,
                      PRIMARY_DX_CODE,ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME, NPI
 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
-WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_2,  "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
-				AND TO_DATE('", access_date_1, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
+WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND TO_DATE('", access_date_2, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
 
 
 # slot_sql <- paste0("	SELECT DEPARTMENT_NAME,PROVIDER_NAME,
