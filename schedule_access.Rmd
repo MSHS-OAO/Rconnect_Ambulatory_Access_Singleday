@@ -18,7 +18,7 @@ source("process_amb_singleday.R")
 #historical.data <- bind_rows(historical_prev, historical.data)
 #max_date_historical <- max(historical.data$Appt.DateYear) - 1095
 #historical.data <- historical.data %>% filter(Appt.DateYear >= max_date_historical)
-saveRDS(historical.data, "/data/Ambulatory/Data/historical_data.rds")
+#saveRDS(historical.data, "/data/Ambulatory/Data/historical_data.rds")
 #rm(historical_prev)
 
 #pop_prev <- readRDS("/data/Ambulatory/Data/population_data.rds")
