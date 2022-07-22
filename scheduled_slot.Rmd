@@ -8,13 +8,13 @@ library(dplyr)
 source("slot_process_singleday.R")
 
 path <- "/data/Ambulatory/Data/"
-#slot_dates <- sort(unique(slot.data.subset$Appt.DateYear))
-#slot_prev <- readRDS(paste0(path, "slot_data.rds"))
-#slot_prev <- slot_prev %>% filter(!(Appt.DateYear %in% slot_dates))
-#slot.data.subset <- bind_rows(slot_prev, slot.data.subset)
+slot_dates <- sort(unique(slot.data.subset$Appt.DateYear))
+slot_prev <- readRDS(paste0(path, "slot_data.rds"))
+slot_prev <- slot_prev %>% filter(!(Appt.DateYear %in% slot_dates))
+slot.data.subset <- bind_rows(slot_prev, slot.data.subset)
 slot.data.subset <- slot.data.subset %>% distinct()
 saveRDS(slot.data.subset, paste0(path, "slot_data.rds"))
-#rm(slot_prev)
+rm(slot_prev)
 
 ```
 
