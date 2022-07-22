@@ -11,34 +11,51 @@ path <- "/data/Ambulatory/Data/"
 #if(max(historical_prev$Appt.DateYear) == (Sys.Date() - 1)){
 #  return(NULL)
 #}else{
-source("process_amb_singleday.R")
 
 
 
 historical_prev <- readRDS(paste0(path,"historical_data.rds"))
-historical.data <- bind_rows(historical_prev, historical.data)
-max_date_historical <- max(historical.data$Appt.DateYear) - 1095
-historical.data <- historical.data %>% filter(Appt.DateYear >= max_date_historical) %>% distinct()
-saveRDS(historical.data, paste0(path,"historical_data.rds"))
+historical_prev <- historical_prev %>% filter(Appt.DateYear < "2022-07-21")
+saveRDS(historical_prev, paste0(path,"historical_data.rds"))
 rm(historical_prev)
 
 pop_prev <- readRDS(paste0(path,"population_data.rds"))
-population.data_filtered <- bind_rows(pop_prev, population.data_filtered)
-max_date_pop <- max(population.data_filtered$Appt.DateYear) - 365
-population.data_filtered <- population.data_filtered %>% filter(Appt.DateYear >= max_date_pop) %>% distinct()
-saveRDS(population.data_filtered, paste0(path,"population_data.rds"))
+pop_prev <- pop_prev %>% filter(Appt.DateYear < "2022-07-21")
+saveRDS(pop_prev, paste0(path,"population_data.rds"))
 rm(pop_prev)
 
 utilization_prev <- readRDS(paste0(path, "utilization_data.rds"))
-utilization.data <- bind_rows(utilization_prev, utilization.data)
-max_date_util <- max(utilization.data$Appt.DateYear) - 60
-utilization.data <- utilization.data %>% filter(Appt.DateYear >= max_date_util) %>% distinct()
-saveRDS(utilization.data, paste0(path, "utilization_data.rds"))
-rm(utilization_prev)
+utilization_prev <- utilization_prev %>% filter(Appt.DateYear < "2022-07-21")
+saveRDS(utilization_prev, paste0(path, "utilization_data.rds"))
 
-holid_prev <- as.data.frame(read_feather(paste0(path, "holid.feather")))
-holid <- bind_rows(holid_prev,holid)
-write_feather(holid, paste0(path, "holid.feather"))
+
+
+#source("process_amb_singleday.R")
+
+# historical_prev <- readRDS(paste0(path,"historical_data.rds"))
+# historical.data <- bind_rows(historical_prev, historical.data)
+# max_date_historical <- max(historical.data$Appt.DateYear) - 1095
+# historical.data <- historical.data %>% filter(Appt.DateYear >= max_date_historical) %>% distinct()
+# saveRDS(historical.data, paste0(path,"historical_data.rds"))
+# rm(historical_prev)
+# 
+# pop_prev <- readRDS(paste0(path,"population_data.rds"))
+# population.data_filtered <- bind_rows(pop_prev, population.data_filtered)
+# max_date_pop <- max(population.data_filtered$Appt.DateYear) - 365
+# population.data_filtered <- population.data_filtered %>% filter(Appt.DateYear >= max_date_pop) %>% distinct()
+# saveRDS(population.data_filtered, paste0(path,"population_data.rds"))
+# rm(pop_prev)
+# 
+# utilization_prev <- readRDS(paste0(path, "utilization_data.rds"))
+# utilization.data <- bind_rows(utilization_prev, utilization.data)
+# max_date_util <- max(utilization.data$Appt.DateYear) - 60
+# utilization.data <- utilization.data %>% filter(Appt.DateYear >= max_date_util) %>% distinct()
+# saveRDS(utilization.data, paste0(path, "utilization_data.rds"))
+# rm(utilization_prev)
+# 
+# holid_prev <- as.data.frame(read_feather(paste0(path, "holid.feather")))
+# holid <- bind_rows(holid_prev,holid)
+# write_feather(holid, paste0(path, "holid.feather"))
 #}
 
 
