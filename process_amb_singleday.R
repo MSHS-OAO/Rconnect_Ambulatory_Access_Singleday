@@ -265,14 +265,14 @@ WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD H
 #holid <- process_data_run[[2]]
 
 data.subset.new <- readRDS("/data/Ambulatory/Data/historical_data.rds")
-rm(data.subset.new)
+
 
 #Create Historical
 max_date <- data.subset.new %>% filter(Appt.Status %in% c("Arrived"))
 max_date <- max(max_date$Appt.DateYear) ## Or Today's Date
 historical.data <- data.subset.new %>% filter(Appt.DateYear<= max_date) ## Filter out historical data only
 
-
+rm(data.subset.new)
 
 #Utilization Data
 max_date_all <- max(historical.data$Appt.DateYear) - 365
