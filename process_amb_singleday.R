@@ -293,9 +293,9 @@ historical.data <- data.subset.new %>% filter(Appt.DateYear<= max_date) ## Filte
 # slot.data.subset <- slot.data.subset %>% filter(Appt.DateYear >= max_date_slot)
 
 #Utilization Data
-# max_date_all <- max(historical.data$Appt.DateYear) - 365
-# all.data <- historical.data #%>% filter(Appt.DTTM >= max_date_all) ## All data: Arrived, No Show, Canceled, Bumped, Rescheduled
-# arrived.data <- all.data %>% filter(Appt.Status %in% c("Arrived")) ## Arrived data: Arrived
+max_date_all <- max(historical.data$Appt.DateYear) - 365
+all.data <- historical.data #%>% filter(Appt.DTTM >= max_date_all) ## All data: Arrived, No Show, Canceled, Bumped, Rescheduled
+arrived.data <- all.data %>% filter(Appt.Status %in% c("Arrived")) ## Arrived data: Arrived
 # canceled.bumped.rescheduled.data <- all.data %>% filter(Appt.Status %in% c("Canceled","Bumped","Rescheduled")) ## Canceled data: canceled appointments only
 # sameDay <- canceled.bumped.rescheduled.data %>% filter(Lead.Days == 0) # Same day canceled, rescheduled, bumped appts
 # noShow.data <- all.data %>% filter(Appt.Status %in% c("No Show")) ## Arrived + No Show data: Arrived and No Show
