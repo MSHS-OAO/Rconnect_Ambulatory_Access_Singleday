@@ -157,7 +157,8 @@ con <- dbConnect(odbc(), Driver = "Oracle",
                  PWD = "villea04123$"
 )
 
-slot_date <- Sys.Date() - 1
+slot_date_1 <- "2022-06-07"
+slot_date_2 <- Sys.Date() - 1
 
 slot_sql <- paste0("SELECT DEPARTMENT_NAME,PROVIDER_NAME,
 	       SLOT_BEGIN_TIME,NUM_APTS_SCHEDULED,SLOT_LENGTH,
@@ -168,8 +169,8 @@ slot_sql <- paste0("SELECT DEPARTMENT_NAME,PROVIDER_NAME,
 	       ORG_OVBK_OPENINGS,PRIVATE_YN,DAY_UNAVAIL_YN,TIME_UNAVAIL_YN,
 	       DAY_HELD_YN,TIME_HELD_YN,OUTSIDE_TEMPLATE_YN,VISIT_PROV_STAFF_RESOURCE_C
 	FROM CRREPORT_REP.Y_DM_BOOKED_FILLED_RATE
-	WHERE SLOT_BEGIN_TIME BETWEEN TO_DATE('", slot_date, "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
-					AND TO_DATE('", slot_date, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
+	WHERE SLOT_BEGIN_TIME BETWEEN TO_DATE('", slot_date_1, "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+					AND TO_DATE('", slot_date_2, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
 
 
 slot_raw <- dbGetQuery(con, slot_sql)
