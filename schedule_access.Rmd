@@ -25,7 +25,7 @@ source("process_amb_singleday.R")
 #population.data_filtered <- bind_rows(pop_prev, population.data_filtered)
 #max_date_pop <- max(population.data_filtered$Appt.DateYear) - 365
 #population.data_filtered <- population.data_filtered #%>% filter(Appt.DateYear >= max_date_pop)
-saveRDS(population.data_filtered, "/data/Ambulatory/Data/population_data.rds")
+#saveRDS(population.data_filtered, "/data/Ambulatory/Data/population_data.rds")
 #rm(pop_prev)
 
 #utilization_prev <- readRDS("/data/Ambulatory/Data/utilization_data.rds")
