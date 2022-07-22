@@ -235,7 +235,8 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 #                       UID    = "villea04",
 #                       PWD    = "villea04123$")
 
-access_date <- Sys.Date() - 1
+access_date_1 <- Sys.Date() - 1
+access_date_2 <- "2021-01-01"
 
 
 
@@ -252,8 +253,8 @@ access_sql <- paste0("SELECT DEP_RPT_GRP_SEVENTEEN,DEPT_SPECIALTY_NAME,DEPARTMEN
                      ACCESS_CENTER_SCHEDULED_YN, VISIT_METHOD, VISIT_PROV_STAFF_RESOURCE_C,
                      PRIMARY_DX_CODE,ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME, NPI
 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
-WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date,  "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
-				AND TO_DATE('", access_date, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
+WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND TO_DATE('", access_date_2, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
 
 
 # slot_sql <- paste0("	SELECT DEPARTMENT_NAME,PROVIDER_NAME,
