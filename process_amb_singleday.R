@@ -462,7 +462,7 @@ utilization.data <- utilization.data %>%
 #population.data <- merge(population.data, zipcode, by.x="new_zip", by.y="zip", all.x = TRUE)
 
 #population.data$`Zip Code Layer: A`[(is.na(population.data$`Zip Code Layer: A`) &
-                                       (!is.na(population.data$state) | population.data$state != "NY"))] <- "Out of NYS"
+ #                                      (!is.na(population.data$state) | population.data$state != "NY"))] <- "Out of NYS"
 #population.data <- population.data %>%
 #  mutate(`Zip Code Layer: B` = ifelse(`Zip Code Layer: A` == "Out of NYS" & is.na(`Zip Code Layer: B`),
  #                                     ifelse(state == "NJ", "New Jersey",
