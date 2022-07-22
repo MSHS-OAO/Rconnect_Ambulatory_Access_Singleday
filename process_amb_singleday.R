@@ -269,33 +269,35 @@ WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_2,  "00:00:00', 'YYYY-MM-DD H
 # 	WHERE SLOT_BEGIN_TIME BETWEEN TO_DATE('", slot_date, "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
 # 					AND TO_DATE('", slot_date, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')")
 
-access_raw <- dbGetQuery(con, access_sql)
+#access_raw <- dbGetQuery(con, access_sql)
 
 # slot_raw <- dbGetQuery(con, slot_sql)
 
 # saveRDS(access_raw, paste0("/data/Scheduled_Test/access_raw_data_", Sys.Date(), ".rds"))
 # saveRDS(slot_raw, paste0("/data/Scheduled_Test/slot_raw_data_", Sys.Date(), ".rds"))   
 
-process_data_run <- process_data(access_raw)
-data.subset.new <- process_data_run[[1]]
+#process_data_run <- process_data(access_raw)
+#data.subset.new <- process_data_run[[1]]
 #slot.data.subset <- process_data_run[[1]]
-holid <- process_data_run[[2]]
+#holid <- process_data_run[[2]]
 
 
 
 #Create Historical
-max_date <- data.subset.new %>% filter(Appt.Status %in% c("Arrived"))
-max_date <- max(max_date$Appt.DateYear) ## Or Today's Date
-historical.data <- data.subset.new %>% filter(Appt.DateYear<= max_date) ## Filter out historical data only
+#max_date <- data.subset.new %>% filter(Appt.Status %in% c("Arrived"))
+#max_date <- max(max_date$Appt.DateYear) ## Or Today's Date
+#historical.data <- data.subset.new %>% filter(Appt.DateYear<= max_date) ## Filter out historical data only
 #historical.data <- data.subset.new %>% filter(Appt.DateYear >= max_date) ## Filter out historical data only
 
 #Create Slot
 # max_date_slot <- max(slot.data.subset$Appt.DateYear) - 455
 # slot.data.subset <- slot.data.subset %>% filter(Appt.DateYear >= max_date_slot)
+historical.data <- readRDS("/data/Ambulatory/Data/historical_data.rds")
 
 #Utilization Data
 max_date_all <- max(historical.data$Appt.DateYear) - 365
 all.data <- historical.data #%>% filter(Appt.DTTM >= max_date_all) ## All data: Arrived, No Show, Canceled, Bumped, Rescheduled
+rm(historical.data)
 arrived.data <- all.data %>% filter(Appt.Status %in% c("Arrived")) ## Arrived data: Arrived
 canceled.bumped.rescheduled.data <- all.data %>% filter(Appt.Status %in% c("Canceled","Bumped","Rescheduled")) ## Canceled data: canceled appointments only
 sameDay <- canceled.bumped.rescheduled.data %>% filter(Lead.Days == 0) # Same day canceled, rescheduled, bumped appts
@@ -303,8 +305,8 @@ noShow.data <- all.data %>% filter(Appt.Status %in% c("No Show")) ## Arrived + N
 noShow.data <- rbind(noShow.data,sameDay) # No Shows + Same day canceled, bumped, rescheduled
 arrivedNoShow.data <- rbind(arrived.data,noShow.data) ## Arrived + No Show data: Arrived and No Show
 
-saveRDS(historical.data, "/data/Ambulatory/Data/historical_data.rds")
-rm(historical.data)
+#saveRDS(historical.data, "/data/Ambulatory/Data/historical_data.rds")
+
 
 # Filter utilization data in last 60 days
 max_date_util <- max(arrivedNoShow.data$Appt.DateYear) - 60
