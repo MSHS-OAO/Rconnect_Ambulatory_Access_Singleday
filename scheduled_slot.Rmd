@@ -4,6 +4,7 @@ output: html_document
 ---
 
 ```{r cars}
+library(dplyr)
 #source("slot_process_singleday.R")
 
 #slot_dates <- sort(unique(slot.data.subset$Appt.DateYear))
