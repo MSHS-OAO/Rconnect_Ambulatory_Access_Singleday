@@ -235,8 +235,8 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 #                       UID    = "villea04",
 #                       PWD    = "villea04123$")
 
-access_date_1 <- Sys.Date() - 1
-access_date_2 <- Sys.Date() - 1
+access_date_1 <- "2021-01-01"
+access_date_2 <- Sys.Date() - 2
 
 print(access_date_1)
 print(access_date_2)
@@ -274,9 +274,14 @@ historical.data <- data.subset.new %>% filter(Appt.DateYear<= max_date) ## Filte
 
 rm(data.subset.new)
 
+path <- "/data/Ambulatory/Data_Updated/"
+saveRDS(historical.data, paste0(path,"historical_data.rds"))
+
 #Utilization Data
 max_date_all <- max(historical.data$Appt.DateYear) - 365
 all.data <- historical.data #%>% filter(Appt.DTTM >= max_date_all) ## All data: Arrived, No Show, Canceled, Bumped, Rescheduled
+rm(historical.data)
+
 arrived.data <- all.data %>% filter(Appt.Status %in% c("Arrived")) ## Arrived data: Arrived
 canceled.bumped.rescheduled.data <- all.data %>% filter(Appt.Status %in% c("Canceled","Bumped","Rescheduled")) ## Canceled data: canceled appointments only
 sameDay <- canceled.bumped.rescheduled.data %>% filter(Lead.Days == 0) # Same day canceled, rescheduled, bumped appts
