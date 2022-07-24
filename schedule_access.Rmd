@@ -7,7 +7,7 @@ output: html_document
 ```{r cars}
 library(dplyr)
 
-path <- "/data/Ambulatory/Data/"
+path <- "/data/Ambulatory/Data_Updated/"
 #if(max(historical_prev$Appt.DateYear) == (Sys.Date() - 1)){
 #  return(NULL)
 #}else{
