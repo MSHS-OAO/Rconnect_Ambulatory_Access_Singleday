@@ -80,11 +80,11 @@ process_data <- function(slot.data.raw){
   
   
   # Clean up department names (X_..._DEACTIVATED)
-  slot.data.raw <- slot.data.raw %>%
-    mutate(DEPARTMENT_NAME = ifelse(str_detect(DEPARTMENT_NAME, "DEACTIVATED"),
-                                    gsub('^.{2}|.{12}$', '', DEPARTMENT_NAME), 
-                                    ifelse(startsWith(DEPARTMENT_NAME,"X_"),
-                                           gsub('^.{2}', '', DEPARTMENT_NAME), DEPARTMENT_NAME)))
+  # slot.data.raw <- slot.data.raw %>%
+  #   mutate(DEPARTMENT_NAME = ifelse(str_detect(DEPARTMENT_NAME, "DEACTIVATED"),
+  #                                   gsub('^.{2}|.{12}$', '', DEPARTMENT_NAME), 
+  #                                   ifelse(startsWith(DEPARTMENT_NAME,"X_"),
+  #                                          gsub('^.{2}', '', DEPARTMENT_NAME), DEPARTMENT_NAME)))
   
   # Dept Specialty Manual Mapping to slot data 
   dept_specialty <- unique(data.subset.new[,c("Department","Campus.Specialty")])
