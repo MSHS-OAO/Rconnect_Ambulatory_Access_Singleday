@@ -236,7 +236,7 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 #                       PWD    = "villea04123$")
 
 access_date_1 <- "2022-07-22" 
-access_date_2 <- Sys.Date() - 1 
+access_date_2 <- "2022-07-22" 
 
 
 
