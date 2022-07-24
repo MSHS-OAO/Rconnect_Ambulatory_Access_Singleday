@@ -158,7 +158,7 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 )
 
 slot_date_1 <- "2021-01-01"
-slot_date_2 <- "2022-07-21"
+slot_date_2 <- Sys.Date() - 2
 
 slot_sql <- paste0("SELECT DEPARTMENT_NAME,PROVIDER_NAME,
 	       SLOT_BEGIN_TIME,NUM_APTS_SCHEDULED,SLOT_LENGTH,
@@ -177,6 +177,7 @@ slot_raw <- dbGetQuery(con, slot_sql)
 
 slot.data.subset <- process_data(slot_raw)
 
+rm(slot_raw)
 #Create Slot
 max_date_slot <- max(slot.data.subset$Appt.DateYear) - 455
 slot.data.subset <- slot.data.subset %>% filter(Appt.DateYear >= max_date_slot)
