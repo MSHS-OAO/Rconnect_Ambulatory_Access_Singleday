@@ -71,9 +71,9 @@ suppressMessages({
 })
 
 process_data <- function(slot.data.raw){
-  data.subset.new <- readRDS("/data/Ambulatory/Data/historical_data.rds")
+  data.subset.new <- readRDS("/data/Ambulatory/Data_Updated/historical_data.rds")
   data.subset.new <- data.subset.new %>% select(Department,Campus.Specialty,Campus)
-  holid <- read_feather("/data/Ambulatory/Data/holid.feather")
+  holid <- read_feather("/data/Ambulatory/Data_Updated/holid.feather")
   ## Pre-processing for Slot Data -----------------------------
   # Replace NAs with 0 in minutes columns
   slot.data.raw[,4:19][is.na(slot.data.raw[,4:19])] <- 0
@@ -158,7 +158,7 @@ con <- dbConnect(odbc(), Driver = "Oracle",
 )
 
 slot_date_1 <- "2021-01-01"
-slot_date_2 <- Sys.Date() - 2
+slot_date_2 <- "2021-12-31"
 
 slot_sql <- paste0("SELECT DEPARTMENT_NAME,PROVIDER_NAME,
 	       SLOT_BEGIN_TIME,NUM_APTS_SCHEDULED,SLOT_LENGTH,
