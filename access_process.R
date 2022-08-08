@@ -150,7 +150,7 @@ process_data <- function(access_data){
   data.subset$Provider <- trimws(gsub("\\[.*?\\]", "", data.subset$Provider))
   
   # New Patient Classification based on Visit Group Num
-  data.subset$New.PT2 <- ifelse(New.PT == 4, "New","Established")
+  data.subset$New.PT2 <- ifelse(data.subset$New.PT == 4, "New","Established")
   # New Patient Classification based on level of care ("LOS_NAME") 
   data.subset$New.PT3 <- ifelse(is.na(data.subset$Class.PT), "",grepl("NEW", data.subset$Class.PT, fixed = TRUE))
   
