@@ -92,7 +92,7 @@ process_data <- function(access_data){
                      "ROOMED_DTTM","FIRST_ROOM_ASSIGN_DTTM","VITALS_TAKEN_TM",
                      "PHYS_ENTER_DTTM","Provider_Leave_DTTM",
                      "VISIT_END_DTTM","CHECKOUT_DTTM",
-                     "TIME_IN_ROOM_MINUTES","CYCLE_TIME_MINUTES","VIS_NEW_TO_DEP_YN","LOS_NAME", "DEP_RPT_GRP_THIRTYONE", 
+                     "TIME_IN_ROOM_MINUTES","CYCLE_TIME_MINUTES","VISIT_GROUP_NUM","LOS_NAME", "DEP_RPT_GRP_THIRTYONE", 
                      "APPT_ENTRY_USER_NAME_WID", "ACCESS_CENTER_SCHEDULED_YN", "VISIT_METHOD", "VISIT_PROV_STAFF_RESOURCE_C",
                      "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ENC_CSN_ID", "VISITPLAN","ATTRIB_BILL_AREA")
   
@@ -121,12 +121,12 @@ process_data <- function(access_data){
                  "Visitend.DTTM","Checkout.DTTM")
   
   # Clean up department names (X_..._DEACTIVATED)
-  data.subset$Department <- as.character(data.subset$Department)
-  data.subset <- data.subset %>%
-    mutate(Department = ifelse(str_detect(Department, "DEACTIVATED"),
-                               gsub('^.{2}|.{12}$', '', Department), 
-                               ifelse(startsWith(Department,"X_"),
-                                      gsub('^.{2}', '', Department), Department)))
+  # data.subset$Department <- as.character(data.subset$Department)
+  # data.subset <- data.subset %>%
+  #   mutate(Department = ifelse(str_detect(Department, "DEACTIVATED"),
+  #                              gsub('^.{2}|.{12}$', '', Department), 
+  #                              ifelse(startsWith(Department,"X_"),
+  #                                     gsub('^.{2}', '', Department), Department)))
   
   dttm <- function(x) {
     as.POSIXct(x,format="%Y-%m-%d %H:%M:%S",tz=Sys.timezone(),origin = "1970-01-01")
@@ -149,11 +149,10 @@ process_data <- function(access_data){
   # Remove Provider ID from Provider Name column
   data.subset$Provider <- trimws(gsub("\\[.*?\\]", "", data.subset$Provider))
   
-  # New Patient Classification based on level of care ("LOS_NAME")
-  data.subset$New.PT2 <- ifelse(is.na(data.subset$Class.PT), "",grepl("NEW", data.subset$Class.PT, fixed = TRUE))
-  # New Patient Classification based on level of care ("LOS_NAME") and Visit New to Department (New.PT) TEMPORARY
-  data.subset$New.PT3 <- ifelse(data.subset$New.PT2 == "", 
-                                ifelse(data.subset$New.PT == "Y", TRUE, FALSE), data.subset$New.PT2)
+  # New Patient Classification based on Visit Group Num
+  data.subset$New.PT2 <- ifelse(New.PT == 4, "New","Established")
+  # New Patient Classification based on level of care ("LOS_NAME") 
+  data.subset$New.PT3 <- ifelse(is.na(data.subset$Class.PT), "",grepl("NEW", data.subset$Class.PT, fixed = TRUE))
   
   
   # Pre-process Appointment Source: access center, entry person, zocdoc, mychart, staywell
