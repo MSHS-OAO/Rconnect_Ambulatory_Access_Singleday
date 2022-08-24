@@ -263,7 +263,7 @@ access_raw <- dbGetQuery(con, access_sql)
 process_data_run <- process_data(access_raw)
 data.subset.new <- process_data_run[[1]]
 holid <- process_data_run[[2]]
-data.subset.new$New.PT <- as.numeric(data.subset.new$New.PT)
+data.subset.new$New.PT <- as.character(data.subset.new$New.PT)
 
 
 
