@@ -82,8 +82,8 @@ process_data <- function(access_data){
   data.raw$VITALS_TAKEN_TM <- ""
   data.raw$Provider_Leave_DTTM <- ""
   
-  # Data fields incldued for analysis 
-  original.cols <- c("DEP_RPT_GRP_SEVENTEEN","DEPT_SPECIALTY_NAME","DEPARTMENT_NAME","PROV_NAME_WID",
+    # Data fields incldued for analysis 
+  original.cols <- c("DEP_RPT_GRP_SEVENTEEN","DEPT_SPECIALTY_NAME","DEPARTMENT_NAME","PROV_NAME_WID", "DEPARTMENT_ID",
                      "MRN","PAT_NAME","ZIP_CODE","SEX","BIRTH_DATE","FINCLASS",
                      "APPT_MADE_DTTM","APPT_DTTM","PRC_NAME","APPT_LENGTH","DERIVED_STATUS_DESC",
                      "APPT_CANC_DTTM", "CANCEL_REASON_NAME",
@@ -91,15 +91,15 @@ process_data <- function(access_data){
                      "ROOMED_DTTM","FIRST_ROOM_ASSIGN_DTTM","VITALS_TAKEN_TM",
                      "PHYS_ENTER_DTTM","Provider_Leave_DTTM",
                      "VISIT_END_DTTM","CHECKOUT_DTTM",
-                     "TIME_IN_ROOM_MINUTES","CYCLE_TIME_MINUTES","VIS_NEW_TO_DEP_YN","LOS_NAME", "DEP_RPT_GRP_THIRTYONE", 
+                     "TIME_IN_ROOM_MINUTES","CYCLE_TIME_MINUTES","VISIT_GROUP_NUM","LOS_NAME", "DEP_RPT_GRP_THIRTYONE", 
                      "APPT_ENTRY_USER_NAME_WID", "ACCESS_CENTER_SCHEDULED_YN", "VISIT_METHOD", "VISIT_PROV_STAFF_RESOURCE_C",
-                     "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI")
+                     "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ENC_CSN_ID", "VISITPLAN","ATTRIB_BILL_AREA")
   
   # Subset raw data 
   data.subset <- data.raw[original.cols]
   
   # Rename data fields (columns) 
-  new.cols <- c("Campus","Campus.Specialty","Department","Provider",
+  new.cols <- c("Campus","Campus.Specialty","Department","Provider", "DepartmentId",
                 "MRN","Patient.Name","Zip.Code","Sex","Birth.Date","Coverage",
                 "Appt.Made.DTTM","Appt.DTTM","Appt.Type","Appt.Dur","Appt.Status",
                 "Appt.Cancel.DTTM", "Cancel.Reason",
@@ -109,7 +109,7 @@ process_data <- function(access_data){
                 "Visitend.DTTM","Checkout.DTTM",
                 "Time.in.room","Cycle.time","New.PT","Class.PT","Cadence",
                 "Appt.Source","Access.Center","Visit.Method","Resource",
-                "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI")
+                "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ENC_CSN_ID", "VISITPLAN","ATTRIB_BILL_AREA")
   
   colnames(data.subset) <- new.cols
   
@@ -120,12 +120,12 @@ process_data <- function(access_data){
                  "Visitend.DTTM","Checkout.DTTM")
   
   # Clean up department names (X_..._DEACTIVATED)
-  data.subset$Department <- as.character(data.subset$Department)
-  data.subset <- data.subset %>%
-    mutate(Department = ifelse(str_detect(Department, "DEACTIVATED"),
-                               gsub('^.{2}|.{12}$', '', Department), 
-                               ifelse(startsWith(Department,"X_"),
-                                      gsub('^.{2}', '', Department), Department)))
+  #data.subset$Department <- as.character(data.subset$Department)
+  #data.subset <- data.subset %>%
+  #  mutate(Department = ifelse(str_detect(Department, "DEACTIVATED"),
+  #                             gsub('^.{2}|.{12}$', '', Department), 
+  #                             ifelse(startsWith(Department,"X_"),
+  #                                    gsub('^.{2}', '', Department), Department)))
   
   dttm <- function(x) {
     as.POSIXct(x,format="%Y-%m-%d %H:%M:%S",tz=Sys.timezone(),origin = "1970-01-01")
@@ -148,11 +148,11 @@ process_data <- function(access_data){
   # Remove Provider ID from Provider Name column
   data.subset$Provider <- trimws(gsub("\\[.*?\\]", "", data.subset$Provider))
   
-  # New Patient Classification based on level of care ("LOS_NAME")
-  data.subset$New.PT2 <- ifelse(is.na(data.subset$Class.PT), "",grepl("NEW", data.subset$Class.PT, fixed = TRUE))
-  # New Patient Classification based on level of care ("LOS_NAME") and Visit New to Department (New.PT) TEMPORARY
-  data.subset$New.PT3 <- ifelse(data.subset$New.PT2 == "", 
-                                ifelse(data.subset$New.PT == "Y", TRUE, FALSE), data.subset$New.PT2)
+  # New Patient Classification based on Visit Group Num
+  data.subset$New.PT2 <- ifelse(is.na(data.subset$New.PT),"Established", "New")
+
+  # New Patient Classification based on level of care ("LOS_NAME") 
+  data.subset$New.PT3 <- ifelse(is.na(data.subset$Class.PT), "",grepl("NEW", data.subset$Class.PT, fixed = TRUE))
   
   
   # Pre-process Appointment Source: access center, entry person, zocdoc, mychart, staywell
@@ -245,10 +245,10 @@ access_sql <- paste0("SELECT DEP_RPT_GRP_SEVENTEEN,DEPT_SPECIALTY_NAME,DEPARTMEN
                      SIGNIN_DTTM,PAGED_DTTM,CHECKIN_DTTM,ARVL_LIST_REMOVE_DTTM,
                      ROOMED_DTTM,FIRST_ROOM_ASSIGN_DTTM,
                      PHYS_ENTER_DTTM,VISIT_END_DTTM,CHECKOUT_DTTM,
-                     TIME_IN_ROOM_MINUTES,CYCLE_TIME_MINUTES,VIS_NEW_TO_DEP_YN,LOS_NAME,LOS_CODE,
+                     TIME_IN_ROOM_MINUTES,CYCLE_TIME_MINUTES,VISIT_GROUP_NUM,LOS_NAME,LOS_CODE,
                      DEP_RPT_GRP_THIRTYONE,APPT_ENTRY_USER_NAME_WID, 
                      ACCESS_CENTER_SCHEDULED_YN, VISIT_METHOD, VISIT_PROV_STAFF_RESOURCE_C,
-                     PRIMARY_DX_CODE,ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME, NPI, VISIT_GROUP_NUM
+                     PRIMARY_DX_CODE,ENC_CLOSED_CHARGE_STATUS,Y_ENC_COSIGN_TIME,Y_ENC_CLOSE_TIME,Y_ENC_OPEN_TIME, NPI, PAT_ENC_CSN_ID, VISITPLAN, ATTRIB_BILL_AREA
 FROM CRREPORT_REP.MV_DM_PATIENT_ACCESS
 WHERE CONTACT_DATE BETWEEN TO_DATE('", access_date_1,  "00:00:00', 'YYYY-MM-DD HH24:MI:SS')
 				AND TO_DATE('", access_date_2, "23:59:59', 'YYYY-MM-DD HH24:MI:SS')
