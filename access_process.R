@@ -154,7 +154,7 @@ process_data <- function(access_data){
 
   # New Patient Classification based on level of care ("LOS_NAME") 
   data.subset$New.PT3 <- ifelse(is.na(data.subset$Class.PT), "",grepl("NEW", toupper(data.subset$Class.PT), fixed = TRUE))
-  data.subset$New.PT3 <- ifelse(New.PT3 == "TRUE", "New", "Established")
+  data.subset$New.PT3 <- ifelse(data.subset$New.PT3 == "TRUE", "New", "Established")
   
   
   # Pre-process Appointment Source: access center, entry person, zocdoc, mychart, staywell
