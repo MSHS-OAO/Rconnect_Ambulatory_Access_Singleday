@@ -86,6 +86,7 @@ historical.data.prev$New.PT <- as.character(historical.data.prev$New.PT)
 historical.data <- bind_rows(historical.data.prev,historical.data)
 historical.data <- historical.data %>% distinct()
 saveRDS(historical.data, paste0(path,"historical_data.rds"))
+historical_day %>% group_by(New.PT3) %>% summarise(total = n())
 rm(historical.data.prev)
 rm(historical.data)
 
