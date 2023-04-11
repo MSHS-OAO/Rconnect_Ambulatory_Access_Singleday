@@ -93,7 +93,7 @@ process_data <- function(access_data){
                      "PHYS_ENTER_DTTM","Provider_Leave_DTTM",
                      "VISIT_END_DTTM","CHECKOUT_DTTM",
                      "TIME_IN_ROOM_MINUTES","CYCLE_TIME_MINUTES","VISIT_GROUP_NUM","LOS_NAME", "DEP_RPT_GRP_THIRTYONE", 
-                     "APPT_ENTRY_USER_NAME_WID", "ACCESS_CENTER_SCHEDULED_YN", "VISIT_METHOD", "VISIT_PROV_STAFF_RESOURCE_C",
+                     "SCHED_METHOD", "VISIT_METHOD", "VISIT_PROV_STAFF_RESOURCE_C",
                      "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ENC_CSN_ID", "VISITPLAN","ATTRIB_BILL_AREA")
   
   # Subset raw data 
@@ -109,7 +109,7 @@ process_data <- function(access_data){
                 "Providerin_DTTM","Providerout_DTTM",
                 "Visitend.DTTM","Checkout.DTTM",
                 "Time.in.room","Cycle.time","New.PT","Class.PT","Cadence",
-                "Appt.Source","Access.Center","Visit.Method","Resource",
+                "SCHED_METHOD","Visit.Method","Resource",
                 "PRIMARY_DX_CODE", "ENC_CLOSED_CHARGE_STATUS", "Y_ENC_COSIGN_TIME", "Y_ENC_CLOSE_TIME", "Y_ENC_OPEN_TIME", "NPI", "PAT_ENC_CSN_ID", "VISITPLAN","ATTRIB_BILL_AREA")
   
   colnames(data.subset) <- new.cols
@@ -158,13 +158,25 @@ process_data <- function(access_data){
   
   
   # Pre-process Appointment Source: access center, entry person, zocdoc, mychart, staywell
-  data.subset$Appt.Source.New <- ifelse(data.subset$Access.Center == "Y", "Access Center","")
-  data.subset$Appt.Source.New <- ifelse(data.subset$Appt.Source.New == "",
-                                        ifelse(grepl("ZOCDOC", data.subset$Appt.Source, fixed = TRUE)==TRUE, "Zocdoc",
-                                               ifelse(grepl("MYCHART", data.subset$Appt.Source, fixed = TRUE)==TRUE, "MyChart",
-                                                      ifelse(grepl("STAYWELL", data.subset$Appt.Source, fixed = TRUE)==TRUE, "StayWell","Other"))),data.subset$Appt.Source.New)
+  entry_person <- c("Other: Appointment Import", "Cadence", "Other: Patient Access External Service", "Other: Stork", "Other: Provider mobile application", "Cerner - Keane")
+  epic_features <- c("Other: FastPass - Hyperspace", "Epic Quick Reg", "FastPass", "Kiosk", "On My Way")
+  find_a_doc <- c("Epic Open Scheduling", "Other: Patient Open Scheduling (External)")
+  epic_mychart <- c("Other: Patient Open Scheduling Widget", "Other: Video Visit Queue - Mobile", "Other: Video Visit Queue - Web", 
+		    "Ticket - Direct Scheduling - MyChart Mobile","Ticket - Direct Scheduling - MyChart Web")
+  consumer_digital <- c("Consumer Digital")
+  zocdoc <- c("ZocDoc")
+
+  data.subset <- data_subset %>%
+	mutate(SCHED_METHOD = trim(SCHED_METHOD)) %>%
+	mutate(Appt.Source.New = case_when(SCHED_METHOD %in% entry_person ~ "Entry Person",
+					   SCHED_METHOD %in% epic_features ~ "Epic Features",
+					   SCHED_METHOD %in% find_a_doc ~ "Find a Doc",
+                                           SCHED_METHOD %in% epic_mychart ~ "Epic MyChart",
+                                           SCHED_METHOD %in% consumer_digital ~ "Consumer Digital",
+                                           SCHED_METHOD %in% zocdoc ~ "ZocDoc",
+					   TRUE ~ "Other"))
   
-  
+	
   # Notify and remove duplicates in data 
   # data.duplicates <- data.subset %>% duplicated()
   # data.duplicates <- length(data.duplicates[data.duplicates == TRUE]) ## Count of duplicated records
