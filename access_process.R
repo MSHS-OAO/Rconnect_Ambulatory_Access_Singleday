@@ -166,7 +166,7 @@ process_data <- function(access_data){
   consumer_digital <- c("Consumer Digital")
   zocdoc <- c("ZocDoc")
 
-  data.subset <- data_subset %>%
+  data.subset <- data.subset %>%
 	mutate(SCHED_METHOD = trim(SCHED_METHOD)) %>%
 	mutate(Appt.Source.New = case_when(SCHED_METHOD %in% entry_person ~ "Entry Person",
 					   SCHED_METHOD %in% epic_features ~ "Epic Features",
