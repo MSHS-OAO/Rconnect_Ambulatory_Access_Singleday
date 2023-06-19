@@ -237,14 +237,18 @@ process_data <- function(access_data){
 
 
 
-con <- dbConnect(odbc(), Driver = "Oracle",
-                 Host = "msx01-scan.mountsinai.org",
-                 Port = 1521,
-                 SVC = "PRD_MSX_TAF.msnyuhealth.org",
-                 UID = "villea04",
-                 PWD = "villea04123$"
-)
+#con <- dbConnect(odbc(), Driver = "Oracle",
+ #                Host = "msx01-scan.mountsinai.org",
+  #               Port = 1521,
+   #              SVC = "PRD_MSX_TAF.msnyuhealth.org",
+    #             UID = "villea04",
+     #            PWD = "villea04123$"
+#)
 
+con <- dbConnect(odbc(), 
+                  dsn = "Clarity_prod", 
+                  uid = "kweons01" , 
+                  pwd = "kweons01123$")
 
 #access_date_1 <- Sys.Date()-1
 #access_date_2 <- Sys.Date()-1
