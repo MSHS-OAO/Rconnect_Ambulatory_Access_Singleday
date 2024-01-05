@@ -253,9 +253,9 @@ con <- dbConnect(odbc(),
 #access_date_1 <- Sys.Date()-1
 #access_date_2 <- Sys.Date()-1
 
-access_date_1 <- "2023-01-01"
-#access_date_2 <- "2021-12-31"
-access_date_2 <- Sys.Date()-1
+access_date_1 <- "2022-01-01"
+access_date_2 <- "2023-12-31"
+#access_date_2 <- Sys.Date()-1
 
 access_sql <- paste0("SELECT DEP_RPT_GRP_SEVENTEEN,DEPT_SPECIALTY_NAME,DEPARTMENT_NAME,PROV_NAME_WID,DEPARTMENT_ID,REFERRING_PROV_NAME_WID,
                      MRN,PAT_NAME,ZIP_CODE,BIRTH_DATE,FINCLASS,
